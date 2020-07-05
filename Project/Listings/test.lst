@@ -1,0 +1,208 @@
+C51 COMPILER V9.60.0.0   TEST                                                              06/30/2020 15:39:16 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE TEST
+OBJECT MODULE PLACED IN .\Objects\test.obj
+COMPILER INVOKED BY: F:\Keil\C51\BIN\C51.EXE test.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\test.ls
+                    -t) TABS(2) OBJECT(.\Objects\test.obj)
+
+line level    source
+
+   1          #include <reg51.h>
+   2          
+   3          sbit r1 = P1^0;
+   4          sbit r2 = P1^1;
+   5          sbit r3 = P1^2;
+   6          sbit r4 = P1^3;
+   7          
+   8          sbit c1 = P1^4;
+   9          sbit c2 = P1^5;
+  10          sbit c3 = P1^6;
+  11          
+  12          sbit rs = P3^5;
+  13          sbit rw = P3^6;
+  14          sbit en = P3^7;
+  15          
+  16          sfr lcd = 0xA0;
+  17          
+  18          
+  19          
+  20          void delay(unsigned int time){
+  21   1        unsigned i, j;
+  22   1        for(i=0;i<time;i++){
+  23   2          for(j=0;j<1275;j++);
+  24   2        }
+  25   1      }
+  26          
+  27          void lcdcmd(unsigned char val){
+  28   1        lcd = val;
+  29   1        rs = 0;
+  30   1        rw = 0;
+  31   1        en = 1;
+  32   1        delay(1);
+  33   1        en = 0;
+  34   1      }
+  35          
+  36          void lcddat(unsigned char dat){
+  37   1        lcd = dat;
+  38   1        rs = 1;
+  39   1        rw = 0;
+  40   1        en = 1;
+  41   1        delay(1);
+  42   1        en = 0;
+  43   1      }
+  44          
+  45          unsigned int t = 0;
+  46          
+  47          void UART_Init()
+  48          { 
+  49   1          SCON = 0x50;
+  50   1          TMOD = 0x20; 
+  51   1          TH1 = 0xFD;
+  52   1          TR1 = 1;
+  53   1      }
+  54          
+C51 COMPILER V9.60.0.0   TEST                                                              06/30/2020 15:39:16 PAGE 2   
+
+  55          void UART_TxChar(char ch)
+  56          {
+  57   1          SBUF = ch;
+  58   1          while(TI==0);
+  59   1          TI = 0;
+  60   1      }
+  61          
+  62          
+  63          void main(){
+  64   1        unsigned char a[]={"Access Granted"};
+  65   1        unsigned char b[]={"Access Denied"};
+  66   1        unsigned char pass[4];
+  67   1        unsigned int i = 0;
+  68   1        
+  69   1        
+  70   1        
+  71   1        while(1){
+  72   2        lcd = 0x00;
+  73   2        lcdcmd(0x38);
+  74   2        lcdcmd(0x01);
+  75   2        lcdcmd(0x84);
+  76   2        lcdcmd(0x0F);
+  77   2        
+  78   2        
+  79   2        i = 0;
+  80   2        while(i<4){
+  81   3          r1 = 0; r2 = 1; r3 = 1; r4 = 1;
+  82   3          if(c1 == 0){
+  83   4            lcddat('1');
+  84   4            delay(30);
+  85   4            pass[i]='1';
+  86   4            i++;
+  87   4          }
+  88   3          if(c2 == 0){
+  89   4            lcddat('2');
+  90   4            delay(30);
+  91   4            pass[i]='2';
+  92   4            i++;
+  93   4          }
+  94   3          if(c3 == 0){
+  95   4            lcddat('3');
+  96   4            delay(30);
+  97   4            pass[i]='3';
+  98   4            i++;
+  99   4          }
+ 100   3          r1 = 1; r2 = 0;
+ 101   3          if(c1 == 0){
+ 102   4            lcddat('4');
+ 103   4            delay(30);
+ 104   4            pass[i]='4';
+ 105   4            i++;
+ 106   4          }
+ 107   3          if(c2 == 0){
+ 108   4            lcddat('5');
+ 109   4            delay(30);
+ 110   4            pass[i]='5';
+ 111   4            i++;
+ 112   4          }
+ 113   3          if(c3 == 0){
+ 114   4            lcddat('6');
+ 115   4            delay(30);
+ 116   4            pass[i]='6';
+C51 COMPILER V9.60.0.0   TEST                                                              06/30/2020 15:39:16 PAGE 3   
+
+ 117   4            i++;
+ 118   4          }
+ 119   3          r2 = 1; r3 = 0;
+ 120   3          if(c1 == 0){
+ 121   4            lcddat('7');
+ 122   4            delay(30);
+ 123   4            pass[i]='7';
+ 124   4            i++;
+ 125   4          }
+ 126   3          if(c2 == 0){
+ 127   4            lcddat('8');
+ 128   4            delay(30);
+ 129   4            pass[i]='8';
+ 130   4            i++;
+ 131   4          }
+ 132   3          if(c3 == 0){
+ 133   4            lcddat('9');
+ 134   4            delay(30);
+ 135   4            pass[i]='9';
+ 136   4            i++;
+ 137   4          }
+ 138   3          r3 = 1; r4 = 0;
+ 139   3          if(c1 == 0){
+ 140   4            lcddat('*');
+ 141   4            delay(30);
+ 142   4            pass[i]='*';
+ 143   4            i++;
+ 144   4          }
+ 145   3          if(c2 == 0){
+ 146   4            lcddat('0');
+ 147   4            delay(30);
+ 148   4            pass[i]='0';
+ 149   4            i++;
+ 150   4          }
+ 151   3          if(c3 == 0){
+ 152   4            lcddat('#');
+ 153   4            delay(30);
+ 154   4            pass[i]='#';
+ 155   4            i++;
+ 156   4          }
+ 157   3          r4 = 1;
+ 158   3        }
+ 159   2        lcdcmd(0x01);
+ 160   2        if(pass[0] == '0' && pass[1] == '0' && pass[2] == '0' && pass[3] == '0'){
+ 161   3          UART_Init();
+ 162   3          for(t=0;a[t]!=0;t++){
+ 163   4            lcddat(a[t]);
+ 164   4            UART_TxChar(a[t]);
+ 165   4          }
+ 166   3        }
+ 167   2        else{
+ 168   3          UART_Init();
+ 169   3          for(t=0;b[t]!=0;t++){
+ 170   4            lcddat(b[t]);
+ 171   4            UART_TxChar(b[t]);
+ 172   4          }
+ 173   3        }
+ 174   2      
+ 175   2          
+ 176   2        delay(300);
+ 177   2      }
+ 178   1      }
+C51 COMPILER V9.60.0.0   TEST                                                              06/30/2020 15:39:16 PAGE 4   
+
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    522    ----
+   CONSTANT SIZE    =     29    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2      33
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
